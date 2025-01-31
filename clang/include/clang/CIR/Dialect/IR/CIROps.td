@@ -505,7 +505,7 @@ def AllocaOp : CIR_Op<"alloca", [
   let results = (outs Res<CIR_PointerType, "",
                       [MemAlloc<AutomaticAllocationScopeResource>]>:$addr);
 
-  let skipDefaultBuilders = 1;
+  let skipDefaultBuilders = 0;
   let builders = [
     OpBuilder<(ins "mlir::Type":$addr, "mlir::Type":$allocaType,
                    "llvm::StringRef":$name,
@@ -771,7 +771,7 @@ def IfOp : CIR_Op<"if",
   let hasCustomAssemblyFormat = 1;
   let hasVerifier = 1;
 
-  let skipDefaultBuilders = 1;
+  let skipDefaultBuilders = 0;
   let builders = [
     OpBuilder<(ins "mlir::Value":$cond, "bool":$withElseRegion,
       CArg<"llvm::function_ref<void(mlir::OpBuilder &, mlir::Location)>",
@@ -815,7 +815,7 @@ def TernaryOp : CIR_Op<"ternary",
                         AnyRegion:$falseRegion);
   let results = (outs Optional<CIR_AnyType>:$result);
 
-  let skipDefaultBuilders = 1;
+  let skipDefaultBuilders = 0;
   let builders = [
     OpBuilder<(ins "mlir::Value":$cond,
       "llvm::function_ref<void(mlir::OpBuilder &, mlir::Location)>":$trueBuilder,
@@ -1083,7 +1083,7 @@ def ScopeOp : CIR_Op<"scope", [
   let regions = (region AnyRegion:$scopeRegion, AnyRegion:$cleanupRegion);
 
   let hasVerifier = 1;
-  let skipDefaultBuilders = 1;
+  let skipDefaultBuilders = 0;
   let assemblyFormat = [{
     custom<OmittedTerminatorRegion>($scopeRegion, $cleanupRegion) (`:` type($results)^)? attr-dict
   }];
@@ -1930,7 +1930,7 @@ def CaseOp : CIR_Op<"case", [
 
   let hasVerifier = 1;
 
-  let skipDefaultBuilders = 1;
+  let skipDefaultBuilders = 0;
   let builders = [
     OpBuilder<(ins "mlir::ArrayAttr":$value,
                    "CaseOpKind":$kind,
@@ -2081,7 +2081,7 @@ def SwitchOp : CIR_Op<"switch",
 
   let hasVerifier = 1;
 
-  let skipDefaultBuilders = 1;
+  let skipDefaultBuilders = 0;
   let builders = [
     OpBuilder<(ins "mlir::Value":$condition,
                "llvm::function_ref<void(mlir::OpBuilder &, mlir::Location, mlir::OperationState &)>":$switchBuilder)>
@@ -2498,7 +2498,7 @@ def GlobalOp : CIR_Op<"global",
     bool hasInitializer() { return !isDeclaration(); }
   }];
 
-  let skipDefaultBuilders = 1;
+  let skipDefaultBuilders = 0;
   let builders = [
     OpBuilder<(ins
       // MLIR's default visibility is public.
@@ -3687,7 +3687,7 @@ def FuncOp : CIR_Op<"func", [
                        OptionalAttr<ArrayAttr>:$annotations,
                        OptionalAttr<AnyASTFunctionDeclAttr>:$ast);
   let regions = (region AnyRegion:$body);
-  let skipDefaultBuilders = 1;
+  let skipDefaultBuilders = 0;
 
   let builders = [OpBuilder<(ins
     "llvm::StringRef":$name, "FuncType":$type,
@@ -3759,7 +3759,7 @@ def LLVMIntrinsicCallOp : CIR_Op<"llvm.intrinsic"> {
   let arguments = (ins
                    StrAttr:$intrinsic_name, Variadic<CIR_AnyType>:$arg_ops);
 
-  let skipDefaultBuilders = 1;
+  let skipDefaultBuilders = 0;
 
   let assemblyFormat = [{
     $intrinsic_name $arg_ops `:` functional-type($arg_ops, $result) attr-dict
@@ -3938,7 +3938,7 @@ class CIR_CallOp<string mnemonic, list<Trait> extra_traits = []> :
   }];
 
   let hasCustomAssemblyFormat = 1;
-  let skipDefaultBuilders = 1;
+  let skipDefaultBuilders = 0;
   let hasVerifier = 0;
 
   dag commonArgs = (ins
@@ -3992,7 +3992,7 @@ def CallOp : CIR_CallOp<"call", [NoRegionArguments]> {
   ), commonArgs);
   let regions = (region AnyRegion:$cleanup);
 
-  let skipDefaultBuilders = 1;
+  let skipDefaultBuilders = 0;
 
   let builders = [
     OpBuilder<(ins "mlir::SymbolRefAttr":$callee, "mlir::Type":$resType,
@@ -4062,7 +4062,7 @@ def TryCallOp : CIR_CallOp<"try_call",
   let successors = (successor AnySuccessor:$cont,
                               AnySuccessor:$landing_pad);
 
-  let skipDefaultBuilders = 1;
+  let skipDefaultBuilders = 0;
 
   let builders = [
     OpBuilder<(ins "mlir::SymbolRefAttr":$callee, "mlir::Type":$resType,
@@ -4216,7 +4216,7 @@ def AwaitOp : CIR_Op<"await",
     attr-dict
   }];
 
-  let skipDefaultBuilders = 1;
+  let skipDefaultBuilders = 0;
   let builders = [
     OpBuilder<(ins
       "cir::AwaitKind":$kind,

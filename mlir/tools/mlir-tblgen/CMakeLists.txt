@@ -33,6 +33,7 @@ add_tablegen(mlir-tblgen MLIR
   RewriterGen.cpp
   SPIRVUtilsGen.cpp
   TosaUtilsGen.cpp
+  VespaCommon.cpp
   VespaEnumsDeserializerGen.cpp
   VespaOpDeserializerGen.cpp
   VespaAttrDeserializerGen.cpp

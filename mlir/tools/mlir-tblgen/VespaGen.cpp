@@ -517,37 +517,26 @@ std::string vespa::serializeParameters(llvm::StringRef ty,
   return serializerRaw;
 }
 
-std::string createDeserializerCall(const ParamData &p,
-                                   llvm::StringRef var) {
+std::string deserializeElement(const ParamData &p,
+                               llvm::StringRef varName) {
   auto typ = p.cppType;
   if (p.customDeserializer.has_value()) {
     auto call = llvm::StringRef(p.customDeserializer.value()).split("$$");
-    return call.first.str() + var.str() + call.second.str();
+    return call.first.str() + varName.str() + call.second.str();
   }
   if (cppTypeToDeserializerCall.count(typ)) {
     const auto *deserializer = cppTypeToDeserializerCall.at(typ);
-    return formatv(deserializer, var).str();
+    return formatv(deserializer, varName).str();
   }
   if (typ.ends_with("Attr")) {
     auto namePair = typ.split("::");
     std::string protoName = ((namePair.first == "cir" ? "CIR" : "MLIR") + namePair.second).str();
-    return "AttrDeserializer::deserialize" + protoName + "(mInfo, " + var.str() + ")";
+    return "AttrDeserializer::deserialize" + protoName + "(mInfo, " + varName.str() + ")";
   }
   if (primitiveSerializable.count(typ)) {
-    return var.str();
+    return varName.str();
   }
-  llvm_unreachable(formatv("no deserializer specified for {0}!", typ));
-}
-
-std::string deserializeElement(const ParamData &p,
-                               llvm::StringRef varName) {
-  // if (cppTypeToDeserializerCall.count(typ)) {
-  //   const auto *deserializer = cppTypeToDeserializerCall.at(typ);
-  //   return formatv(deserializer, varName).str();
-  // }
-  // assert(primitiveSerializable.count(typ));
-  // return varName.str();
-  return createDeserializerCall(p, varName);
+  llvm_unreachable("no deserializer specified!");
 }
 
 void vespa::checkType(llvm::StringRef typ, llvm::raw_ostream &os) {

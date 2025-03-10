@@ -106,6 +106,7 @@ static bool emitTypeProto(const RecordKeeper &records, llvm::raw_ostream &os) {
   os << "  bool incomplete = 3;\n";
   os << "  bool packed = 4;\n";
   os << "  CIRRecordKind kind = 5;\n";
+  os << "  optional string raw_ast = 6;\n";
   os << "}\n";
   os << "\n";
 
@@ -174,6 +175,7 @@ static bool emitTypeProtoSerializerSource(const RecordKeeper &records,
   os << "#include \"cir-tac/TypeSerializer.h\"\n";
   os << "#include \"cir-tac/EnumSerializer.h\"\n";
   os << "#include \"proto/type.pb.h\"\n";
+  os << "#include \"llvm/Support/raw_ostream.h\"\n";
   os << "\n";
   os << "#include <llvm/ADT/TypeSwitch.h>\n";
   os << "#include <mlir/IR/BuiltinTypes.h>\n";
@@ -243,6 +245,10 @@ static bool emitTypeProtoSerializerSource(const RecordKeeper &records,
   os << "  serialized.set_packed(type.getPacked());\n";
   os << "  serialized.set_kind(serializeCIRRecordKind(type.getKind()));\n";
   os << "  return serialized;\n";
+  os << "  if (type.getAst()) {\n";
+  os << "    llvm::raw_string_ostream os(*serialized.mutable_raw_ast());\n";
+  os << "    type.getAst().print(os);\n";
+  os << "  }\n";
   os << "}\n";
   os << "\n";
 

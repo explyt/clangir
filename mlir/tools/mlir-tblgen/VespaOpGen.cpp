@@ -232,7 +232,6 @@ static void serializeResultField(StringRef name, ValueType type, llvm::raw_ostre
 static bool emitOpProto(const RecordKeeper &records, raw_ostream &os) {
   os << autogenMessage;
   os << clangOff;
-  os << jacoDBLicense;
   os << protoHeader;
   os << "\n";
   os << "import \"setup.proto\";\n";

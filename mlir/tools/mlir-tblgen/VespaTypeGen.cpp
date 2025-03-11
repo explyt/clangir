@@ -59,7 +59,6 @@ static std::vector<const Record *> getDefs(const RecordKeeper &records) {
 static bool emitTypeProto(const RecordKeeper &records, llvm::raw_ostream &os) {
   os << autogenMessage;
   os << clangOff;
-  os << jacoDBLicense;
   os << protoHeader;
   os << "\n";
   os << "import \"setup.proto\";\n";

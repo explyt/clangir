@@ -57,7 +57,6 @@ static std::string normalizeEnumName(llvm::StringRef name) {
 static bool emitAttrProto(const RecordKeeper &records, raw_ostream &os) {
   os << autogenMessage;
   os << clangOff;
-  os << jacoDBLicense;
   os << protoHeader;
   os << "\n";
 

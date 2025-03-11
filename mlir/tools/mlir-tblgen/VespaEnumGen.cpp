@@ -47,15 +47,15 @@ static bool emitEnumProto(const RecordKeeper &records, raw_ostream &os) {
   }
 
   os << "enum CIRRecordKind {\n";
-  os << "  RecordKind_Class = 0;\n";
-  os << "  RecordKind_Union = 1;\n";
-  os << "  RecordKind_Struct = 2;\n";
+  os << "  CIRRecordKind_Class = 0;\n";
+  os << "  CIRRecordKind_Union = 1;\n";
+  os << "  CIRRecordKind_Struct = 2;\n";
   os << "}\n";
   os << "\n";
   os << "enum MLIRSignednessSemantics {\n";
-  os << "  SignednessSemantics_Signless = 0;\n";
-  os << "  SignednessSemantics_Signed = 1;\n";
-  os << "  SignednessSemantics_Unsigned = 2;\n";
+  os << "  MLIRSignednessSemantics_Signless = 0;\n";
+  os << "  MLIRSignednessSemantics_Signed = 1;\n";
+  os << "  MLIRSignednessSemantics_Unsigned = 2;\n";
   os << "}\n";
   os << "\n";
 
@@ -200,11 +200,11 @@ static bool emitEnumProtoSerializerSource(const RecordKeeper &records,
         "{\n";
   os << "  switch (e) {\n";
   os << "  case cir::StructType::RecordKind::Class:\n";
-  os << "    return CIRRecordKind::RecordKind_Class;\n";
+  os << "    return CIRRecordKind::CIRRecordKind_Class;\n";
   os << "  case cir::StructType::RecordKind::Union:\n";
-  os << "    return CIRRecordKind::RecordKind_Union;\n";
+  os << "    return CIRRecordKind::CIRRecordKind_Union;\n";
   os << "  case cir::StructType::RecordKind::Struct:\n";
-  os << "    return CIRRecordKind::RecordKind_Struct;\n";
+  os << "    return CIRRecordKind::CIRRecordKind_Struct;\n";
   os << "  default:\n";
   os << "    assert(0 && \"Unknown enum variant\");\n";
   os << "  }\n";
@@ -214,11 +214,11 @@ static bool emitEnumProtoSerializerSource(const RecordKeeper &records,
   os << "MLIRSignednessSemantics serializeMLIRSignednessSemantics(mlir::IntegerType::SignednessSemantics e) {\n";
   os << "  switch (e) {\n";
   os << "  case mlir::IntegerType::SignednessSemantics::Signless:\n";
-  os << "    return MLIRSignednessSemantics::SignednessSemantics_Signless;\n";
+  os << "    return MLIRSignednessSemantics::MLIRSignednessSemantics_Signless;\n";
   os << "  case mlir::IntegerType::SignednessSemantics::Signed:\n";
-  os << "    return MLIRSignednessSemantics::SignednessSemantics_Signed;\n";
+  os << "    return MLIRSignednessSemantics::MLIRSignednessSemantics_Signed;\n";
   os << "  case mlir::IntegerType::SignednessSemantics::Unsigned:\n";
-  os << "    return MLIRSignednessSemantics::SignednessSemantics_Unsigned;\n";
+  os << "    return MLIRSignednessSemantics::MLIRSignednessSemantics_Unsigned;\n";
   os << "  default:\n";
   os << "    assert(0 && \"Unknown enum variant\");\n";
   os << "  }\n";
@@ -245,6 +245,10 @@ const char *const switchCaseDef = R"(
     case {4}{0}::{0}_{1}:
       return {2}::{3};)";
 
+const char *const switchCaseDefWithNamespace = R"(
+    case {4}{0}::{4}{0}_{1}:
+      return {2}::{3};)";
+
 const char *const switchEndDef = R"(
     default:
       llvm_unreachable("Unexpected enum value!");
@@ -263,6 +267,18 @@ static void emitEnumDeserializerMethod(const EnumPairing &name,
   os << formatv(methodDef, name.protoName, name.cppName, protoPrefix);
   for (auto enumerant : values) {
     os << formatv(switchCaseDef, name.protoName, enumerant.protoName, name.cppName,
+      enumerant.cppName, protoPrefix);
+  }
+  os << switchEndDef;
+}
+
+static void emitEnumDeserializerMethodWithNamespace(const EnumPairing &name,
+                                       const llvm::ArrayRef<EnumPairing> &values,
+                                       const char *protoPrefix,
+                                       raw_ostream &os) {
+  os << formatv(methodDef, name.protoName, name.cppName, protoPrefix);
+  for (auto enumerant : values) {
+    os << formatv(switchCaseDefWithNamespace, name.protoName, enumerant.protoName, name.cppName,
       enumerant.cppName, protoPrefix);
   }
   os << switchEndDef;
@@ -305,8 +321,8 @@ static bool emitEnumProtoDeserializerSource(const RecordKeeper &records,
     emitEnumDeserializerMethod({enumCppName, enumName}, enumerants, "CIR", os);
   }
 
-  emitEnumDeserializerMethod(recordKindName, recordKindValues, "CIR", os);
-  emitEnumDeserializerMethod(signedlessName, signedlessValues, "MLIR", os);
+  emitEnumDeserializerMethodWithNamespace(recordKindName, recordKindValues, "CIR", os);
+  emitEnumDeserializerMethodWithNamespace(signedlessName, signedlessValues, "MLIR", os);
 
   os << "\n";
   os << clangOn;

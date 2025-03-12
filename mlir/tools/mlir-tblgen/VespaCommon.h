@@ -137,7 +137,7 @@ public:
     genClass();
     internalClass.finalize();
     internalClass.writeDeclTo(os);
-    os << declHeader.close << "\n";
+    os << declHeader.close;
   }
 
   void dumpDef(llvm::raw_ostream &os) {
@@ -145,7 +145,7 @@ public:
     genClass();
     internalClass.finalize();
     internalClass.writeDefTo(os);
-    os << defHeader.close << "\n";
+    os << defHeader.close;
   }
 
   virtual ~CppSwitchSource() = default;

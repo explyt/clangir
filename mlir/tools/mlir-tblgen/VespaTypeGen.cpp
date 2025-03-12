@@ -233,7 +233,7 @@ using namespace protocir;
 namespace protocir {
 )";
 
-  std::string declHeaderClose = "} // namespace protocir";
+  std::string declHeaderClose = "} // namespace protocir\n";
 
   std::string structSer = R"(
 CIRStructType serialized;

@@ -259,7 +259,6 @@ static bool emitAttrProtoSerializerHeader(const RecordKeeper &records,
 
   os << autogenMessage;
   os << clangOff;
-  os << jacoDBLicense;
   os << "\n";
   os << "#pragma once\n";
   os << "\n";

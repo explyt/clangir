@@ -48,7 +48,6 @@ package protocir;
 option java_package = "org.jacodb.impl.grpc";
 )";
 
-
 inline constexpr const char *jacoDBLicense = R"(/*
  *  Copyright 2022 UnitTestBot contributors (utbot.org)
  * <p>
@@ -80,22 +79,19 @@ llvm::StringRef removeGlobalScopeQualifier(llvm::StringRef type);
 llvm::StringRef removeArray(llvm::StringRef &type);
 
 void serializeParameter(mlir::tblgen::AttrOrTypeParameter &p,
-                        llvm::StringRef varName,
-                        llvm::raw_ostream &os);
+                        llvm::StringRef varName, llvm::raw_ostream &os);
 
-std::string serializeParameters(llvm::StringRef ty,
-                                llvm::ArrayRef<mlir::tblgen::AttrOrTypeParameter> ps,
-                                llvm::StringRef varName);
+std::string
+serializeParameters(llvm::StringRef ty,
+                    llvm::ArrayRef<mlir::tblgen::AttrOrTypeParameter> ps,
+                    llvm::StringRef varName);
 
-void deserializeParameter(const ParamData &p,
-                          llvm::StringRef varName,
+void deserializeParameter(const ParamData &p, llvm::StringRef varName,
                           llvm::raw_ostream &os);
 
-std::string deserializeParameters(llvm::StringRef ty,
-                                  llvm::StringRef cppTy,
+std::string deserializeParameters(llvm::StringRef ty, llvm::StringRef cppTy,
                                   llvm::ArrayRef<ParamData> ps,
-                                  llvm::StringRef varName,
-                                  const char *finisher,
+                                  llvm::StringRef varName, const char *finisher,
                                   bool doesNeedCtx = false);
 
 void checkType(llvm::StringRef typ, llvm::raw_ostream &os);
@@ -103,21 +99,15 @@ void checkType(llvm::StringRef typ, llvm::raw_ostream &os);
 llvm::StringRef getKotlinType(mlir::tblgen::AttrOrTypeParameter &p);
 
 void buildParameter(mlir::tblgen::AttrOrTypeParameter &p,
-                    llvm::StringRef varName,
-                    llvm::raw_ostream &os,
+                    llvm::StringRef varName, llvm::raw_ostream &os,
                     size_t padding = 8);
 
-void generateCodeFile(llvm::ArrayRef<CppSwitchSource*> sources,
-                      bool disableClang,
-                      bool addLicense,
-                      bool emitDecl,
+void generateCodeFile(llvm::ArrayRef<CppSwitchSource *> sources,
+                      bool disableClang, bool addLicense, bool emitDecl,
                       llvm::raw_ostream &os);
 
-void generateCodeFile(CppSwitchSource &source,
-                      bool disableClang,
-                      bool addLicense,
-                      bool emitDecl,
-                      llvm::raw_ostream &os);
+void generateCodeFile(CppSwitchSource &source, bool disableClang,
+                      bool addLicense, bool emitDecl, llvm::raw_ostream &os);
 
 } // namespace vespa
 

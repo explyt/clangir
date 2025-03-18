@@ -33,6 +33,12 @@ add_tablegen(mlir-tblgen MLIR
   RewriterGen.cpp
   SPIRVUtilsGen.cpp
   TosaUtilsGen.cpp
+  VespaCommon.cpp
+  VespaAttrGen.cpp
+  VespaEnumGen.cpp
+  VespaGen.cpp
+  VespaOpGen.cpp
+  VespaTypeGen.cpp
   )
 
 target_link_libraries(mlir-tblgen
